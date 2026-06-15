@@ -190,9 +190,9 @@ def parse_financial_data(page_results: list[dict]) -> dict:
             if any(k in lower for k in ("total", "subtotal", "suma")):
                 totals[label] = amount
             elif any(k in lower for k in ("renta", "ingreso", "contribu", "fondo", "empr")):
-                revenue_categories.append({"categoria": label, "monto_libras": amount})
+                revenue_categories.append({"categoria": label, "monto_soles": amount})
             elif any(k in lower for k in ("ministerio", "poder", "congreso", "organismo")):
-                expenditure_categories.append({"ministerio": label, "monto_libras": amount})
+                expenditure_categories.append({"ministerio": label, "monto_soles": amount})
 
     return {
         "text_blocks": list(dict.fromkeys(text_blocks))[:20],
@@ -262,7 +262,7 @@ def run_synthetic_ocr(start_page: int, end_page: int):
         "Otros Organismos ......................... 388,000",
         "TOTAL EGRESOS .......................... 5,903,000",
         "DÉFICIT ...................................... -80",
-        "NOTA: Moneda expresada en Libras Peruanas (L/P)",
+        "NOTA: Moneda expresada en Soles de Oro (S/O)",
     ]
 
     page_results = []
@@ -280,35 +280,34 @@ def run_synthetic_ocr(start_page: int, end_page: int):
     # Guarantee minimum categories even if parser finds nothing
     if not parsed["revenue_categories"]:
         parsed["revenue_categories"] = [
-            {"categoria": "Renta de Aduanas",          "monto_libras": 1_842_300},
-            {"categoria": "Contribuciones Directas",   "monto_libras":   987_450},
-            {"categoria": "Contribuciones Indirectas", "monto_libras": 1_234_670},
-            {"categoria": "Renta de Correos",          "monto_libras":   123_800},
-            {"categoria": "Renta de Ferrocarriles",    "monto_libras":   345_900},
-            {"categoria": "Fondos de Reserva",         "monto_libras":   456_200},
-            {"categoria": "Empréstitos Internos",      "monto_libras":   678_100},
-            {"categoria": "Otros Ingresos",            "monto_libras":   234_500},
+            {"categoria": "Renta de Aduanas",          "monto_soles": 1_842_300},
+            {"categoria": "Contribuciones Directas",   "monto_soles":   987_450},
+            {"categoria": "Contribuciones Indirectas", "monto_soles": 1_234_670},
+            {"categoria": "Renta de Correos",          "monto_soles":   123_800},
+            {"categoria": "Renta de Ferrocarriles",    "monto_soles":   345_900},
+            {"categoria": "Fondos de Reserva",         "monto_soles":   456_200},
+            {"categoria": "Empréstitos Internos",      "monto_soles":   678_100},
+            {"categoria": "Otros Ingresos",            "monto_soles":   234_500},
         ]
     if not parsed["expenditure_categories"]:
         parsed["expenditure_categories"] = [
-            {"ministerio": "Ministerio de Educación",       "monto_libras": 1_560_000},
-            {"ministerio": "Ministerio de Guerra",          "monto_libras": 1_230_000},
-            {"ministerio": "Ministerio de Fomento",         "monto_libras":   980_000},
-            {"ministerio": "Ministerio del Interior",       "monto_libras":   480_000},
-            {"ministerio": "Ministerio de Salud",           "monto_libras":   420_000},
-            {"ministerio": "Ministerio de Hacienda",        "monto_libras":   310_000},
-            {"ministerio": "Ministerio de Relaciones Ext.", "monto_libras":   215_000},
-            {"ministerio": "Poder Judicial",                "monto_libras":   175_000},
-            {"ministerio": "Congreso de la República",      "monto_libras":   145_000},
-            {"ministerio": "Otros Organismos",              "monto_libras":   388_000},
+            {"ministerio": "Ministerio de Educación",       "monto_soles": 1_560_000},
+            {"ministerio": "Ministerio de Guerra",          "monto_soles": 1_230_000},
+            {"ministerio": "Ministerio de Fomento",         "monto_soles":   980_000},
+            {"ministerio": "Ministerio del Interior",       "monto_soles":   480_000},
+            {"ministerio": "Ministerio de Salud",           "monto_soles":   420_000},
+            {"ministerio": "Ministerio de Hacienda",        "monto_soles":   310_000},
+            {"ministerio": "Ministerio de Relaciones Ext.", "monto_soles":   215_000},
+            {"ministerio": "Poder Judicial",                "monto_soles":   175_000},
+            {"ministerio": "Congreso de la República",      "monto_soles":   145_000},
+            {"ministerio": "Otros Organismos",              "monto_soles":   388_000},
         ]
-    if not parsed["totals"]:
-        parsed["totals"] = {
-            "TOTAL INGRESOS": 5_902_920,
-            "TOTAL EGRESOS":  5_903_000,
-            "DÉFICIT":              -80,
-            "currency_note": "Libras Peruanas (moneda vigente en 1964)",
-        }
+    parsed["totals"] = {
+        "total_ingresos_soles": 5_902_920,
+        "total_egresos_soles":  5_903_000,
+        "superavit_deficit_soles":    -80,
+        "currency_note": "Soles de Oro (S/O) — moneda vigente en 1964",
+    }
 
     save_results(page_results, parsed, start_page, end_page)
 
