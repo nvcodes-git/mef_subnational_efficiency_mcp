@@ -239,13 +239,13 @@ with tab1:
         f'<b>📄 OCR Source:</b> Ministerio de Hacienda y Comercio — '
         f'Cuenta General de la República 1964<br>'
         f'<b>Pages Processed:</b> {hist["pages_processed"]} pages via PaddleOCR<br>'
-        f'<b>Currency:</b> Libras Peruanas (L/P) — the monetary unit in use during 1964<br><br>'
+        f'<b>Currency:</b> Soles de Oro (S/O) — the monetary unit in use during 1964<br><br>'
         f'<b>Key Historical Findings:</b><br>'
         f'• The 1964 budget reflects a highly centralised fiscal structure — '
         f'the Ministry of Education alone absorbed the largest single expenditure block.<br>'
         f'• Customs revenue (Renta de Aduanas) was the dominant income source, '
         f'reflecting Peru\'s export-driven economy of the era.<br>'
-        f'• The near-zero deficit (−80 L/P) indicates a formally balanced budget, '
+        f'• The near-zero deficit (−80 S/O) indicates a formally balanced budget, '
         f'though off-budget expenditures were common in that period.<br>'
         f'• The absence of subnational government lines confirms the fully centralised '
         f'fiscal architecture that preceded the 1990s decentralisation reforms.'
@@ -256,17 +256,17 @@ with tab1:
     h_col1, h_col2 = st.columns(2)
 
     with h_col1:
-        st.markdown("**Revenue Structure — 1964 (Libras Peruanas)**")
+        st.markdown("**Revenue Structure — 1964 (Soles de Oro)**")
         rev = hist.get("revenue_categories", [])
         if rev:
             rev_df = pd.DataFrame(rev)
             fig_rev = px.bar(
-                rev_df, x="monto_libras", y="categoria",
+                rev_df, x="monto_soles", y="categoria",
                 orientation="h",
-                color="monto_libras",
+                color="monto_soles",
                 color_continuous_scale="Greens",
                 title="Ingresos por Categoría — 1964",
-                labels={"monto_libras": "Libras Peruanas", "categoria": ""},
+                labels={"monto_soles": "Soles de Oro (S/O)", "categoria": ""},
             )
             fig_rev.update_layout(
                 plot_bgcolor="#1a1f35", paper_bgcolor="#1a1f35",
@@ -279,12 +279,12 @@ with tab1:
             st.plotly_chart(fig_rev, use_container_width=True)
 
     with h_col2:
-        st.markdown("**Expenditure by Ministry — 1964 (Libras Peruanas)**")
+        st.markdown("**Expenditure by Ministry — 1964 (Soles de Oro)**")
         exp = hist.get("expenditure_categories", [])
         if exp:
             exp_df = pd.DataFrame(exp)
             fig_exp = px.pie(
-                exp_df, values="monto_libras", names="ministerio",
+                exp_df, values="monto_soles", names="ministerio",
                 title="Distribución del Gasto por Ministerio — 1964",
                 color_discrete_sequence=px.colors.sequential.Teal,
                 hole=0.4,
@@ -301,12 +301,12 @@ with tab1:
     if totals:
         t1, t2, t3 = st.columns(3)
         t1.metric("Total Ingresos 1964",
-                  f"L/P {totals.get('TOTAL INGRESOS', 0):,.0f}")
+                  f"S/O {totals.get('TOTAL INGRESOS', totals.get('total_ingresos_soles', 0)):,.0f}")
         t2.metric("Total Egresos 1964",
-                  f"L/P {totals.get('TOTAL EGRESOS', 0):,.0f}")
-        deficit = totals.get("DÉFICIT", totals.get("deficit", 0))
+                  f"S/O {totals.get('TOTAL EGRESOS', totals.get('total_egresos_soles', 0)):,.0f}")
+        deficit = totals.get("superavit_deficit_soles", totals.get("DÉFICIT", totals.get("deficit", 0)))
         t3.metric("Déficit / Superávit",
-                  f"L/P {deficit:,.0f}",
+                  f"S/O {deficit:,.0f}",
                   delta="Near-balanced budget",
                   delta_color="off")
 
